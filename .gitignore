@@ -1,0 +1,60 @@
+# ===========================================================================
+# SECRETS — never commit these. Rotate immediately if one ever lands in a push.
+# ===========================================================================
+.env
+.env.*
+!.env.example
+# Also covers nested packages (backend/.env, admin/.env, ...) on every clone.
+**/.env
+**/.env.*
+!**/.env.example
+**/.env.local
+**/.env.*.local
+
+# Keys, certs and provider/cloud credential files
+*.pem
+*.key
+*.p8
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+*[sS]ervice[aA]ccount*.json
+*[sS]ervice-[aA]ccount*.json
+*[cC]redentials*.json
+*[cC]redential*.json
+*adminsdk*.json
+*firebase-adminsdk*.json
+gcloud-credentials*.json
+.npmrc
+.firebase/
+.vercel/
+.netlify/
+
+# ===========================================================================
+# Dependencies and build output
+# ===========================================================================
+node_modules/
+dist/
+
+# ===========================================================================
+# Logs and test artifacts
+# ===========================================================================
+*.log
+npm-debug.log*
+logs/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# ===========================================================================
+# Editors and OS
+# ===========================================================================
+.DS_Store
+Thumbs.db
+*.swp

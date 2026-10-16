@@ -1,0 +1,350 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #05070d;
+  --color-surface: #0a0d16;
+  --color-raised: #10141f;
+  --color-glass: rgba(255, 255, 255, 0.025);
+  --color-accent: #22d3ee;
+  --color-accent-soft: #67e8f9;
+  --color-violet: #8b5cf6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #f43f5e;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-display: "Manrope", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* Admin Control Center typography — scoped so the marketing/dashboard
+     site keeps its existing Inter/Manrope identity untouched. */
+  --font-admin: "Geist", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-admin-mono: "Geist Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+  /* Unified checkout typography — Geist body / Geist Mono for money, scoped
+     the same way as the admin shell so the rest of the app is untouched. */
+  --font-checkout: "Geist", "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-checkout-mono: "Geist Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+
+:root {
+  --color-bg: #05070d;
+  --color-surface: #0a0d16;
+  --color-surface-raised: #10141f;
+  --color-surface-glass: rgba(255, 255, 255, 0.025);
+  --color-text-primary: #ffffff;
+  --color-text-secondary: rgba(255, 255, 255, 0.62);
+  --color-text-muted: rgba(255, 255, 255, 0.42);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-soft: rgba(255, 255, 255, 0.06);
+  --color-accent: #22d3ee;
+  --color-accent-dim: rgba(34, 211, 238, 0.14);
+  --color-violet: #8b5cf6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #f43f5e;
+  --space-1: 4px; --space-2: 8px; --space-3: 10px; --space-4: 12px;
+  --space-5: 16px; --space-6: 18px; --space-7: 20px; --space-8: 24px;
+  --space-section: clamp(72px, 10vw, 128px);
+  --space-container: clamp(20px, 4vw, 40px);
+  --duration-instant: 150ms; --duration-fast: 300ms; --duration-normal: 600ms;
+  --radius-sm: 10px; --radius-md: 12px; --radius-lg: 24px; --radius-xl: 32px; --radius-pill: 9999px;
+}
+
+html { scroll-behavior: smooth; }
+html, body { background: #000; }
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-size: 16px; line-height: 24px; color: #fff;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection { background: rgba(59,130,246,.35); }
+
+:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; border-radius: 6px; }
+
+.glass {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.10);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+}
+.panel { background: #0a0d16; border: 1px solid rgba(255,255,255,.08); }
+.text-secondary { color: rgba(255,255,255,.62); }
+.text-muted { color: rgba(255,255,255,.42); }
+.hairline { border-color: rgba(255,255,255,.08); }
+
+/* Financial data: monospaced, tabular, slightly tightened. */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+/* Inside the admin shell, numerals switch to Geist Mono (scoped override —
+   the rest of the app keeps JetBrains Mono). */
+.font-admin .num {
+  font-family: var(--font-admin-mono);
+}
+/* Checkout shell: Geist body + Geist Mono for every monetary figure. */
+.font-checkout { font-family: var(--font-checkout); }
+.font-checkout .num { font-family: var(--font-checkout-mono); }
+
+/* Subtle shimmer used by dashboard skeleton panels. */
+@keyframes slt-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.09) 37%, rgba(255,255,255,0.04) 63%);
+  background-size: 200% 100%;
+  animation: slt-shimmer 1.6s ease-in-out infinite;
+}
+
+/* App-shell scrollbars. */
+.thin-scroll::-webkit-scrollbar-track { background: transparent; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+.thin-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 99px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* Landing ticker: seamless -50% loop over two identical halves. */
+@keyframes slt-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Landing surfaces on the premium #070910 base. */
+.slt-page { background: #070910; }
+.slt-grid-bg {
+  background-image:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(82, 120, 255, 0.12), transparent),
+    radial-gradient(ellipse 45% 35% at 85% 20%, rgba(152, 103, 255, 0.08), transparent),
+    radial-gradient(ellipse 45% 35% at 10% 30%, rgba(77, 235, 255, 0.06), transparent);
+}
+
+/* ==========================================================================
+   ADMIN CONTROL CENTER — NEON GLOW
+   --------------------------------------------------------------------------
+   Decorative illumination for the admin panel only. Two deliberate
+   constraints keep this safe and reversible:
+
+   1. Everything is scoped under `.admin-shell`, which is applied by
+      AdminLayout alone. The shared kit in components/ui.jsx is also used by
+      the trader dashboard, so scoping here means those components look
+      identical to before outside the admin panel.
+
+   2. Every glow declaration lives under `.admin-shell[data-glow="on"]`.
+      The OFF state therefore needs no overrides at all — it simply stops
+      matching, which provably removes shadows, text-shadows and filters
+      while leaving colour, layout, charts and functionality untouched.
+
+   Palette: cyan/ice primary, violet secondary, magenta accent,
+   emerald for positive money, rose for negative/critical.
+   ========================================================================== */
+.admin-shell {
+  --glow-cyan: 34 211 238;
+  --glow-ice: 103 232 249;
+  --glow-violet: 139 92 246;
+  --glow-magenta: 232 121 249;
+  --glow-emerald: 16 185 129;
+  --glow-amber: 245 158 11;
+  --glow-rose: 244 63 94;
+}
+
+/* Smooth cross-fade when the toggle flips. The global
+   `prefers-reduced-motion` block above collapses these to ~0ms. */
+.admin-shell .glow-title,
+.admin-shell .glow-section,
+.admin-shell .glow-value,
+.admin-shell .glow-icon,
+.admin-shell .glow-card,
+.admin-shell .glow-badge,
+.admin-shell .glow-btn,
+.admin-shell .glow-btn-sec,
+.admin-shell .glow-input,
+.admin-shell .glow-active,
+.admin-shell .glow-logo,
+.admin-shell .glow-toggle {
+  transition:
+    box-shadow 0.35s ease,
+    text-shadow 0.35s ease,
+    filter 0.35s ease,
+    border-color 0.35s ease,
+    background-color 0.35s ease;
+}
+
+/* ---- Typography ---- */
+.admin-shell[data-glow="on"] .glow-title {
+  text-shadow:
+    0 0 18px rgb(var(--glow-cyan) / 0.42),
+    0 0 44px rgb(var(--glow-violet) / 0.3);
+}
+.admin-shell[data-glow="on"] .glow-section {
+  text-shadow: 0 0 14px rgb(var(--glow-cyan) / 0.3);
+}
+.admin-shell[data-glow="on"] .glow-value {
+  /* Only the shadow is touched — colour classes (emerald/rose) always win. */
+  text-shadow: 0 0 12px rgb(var(--glow-cyan) / 0.28);
+}
+
+/* ---- Icons (restrained) ---- */
+.admin-shell[data-glow="on"] .glow-icon {
+  filter: drop-shadow(0 0 5px rgb(var(--glow-cyan) / 0.55));
+}
+.admin-shell[data-glow="on"] .glow-icon-rose {
+  filter: drop-shadow(0 0 5px rgb(var(--glow-rose) / 0.5));
+}
+.admin-shell[data-glow="on"] .glow-icon-emerald {
+  filter: drop-shadow(0 0 5px rgb(var(--glow-emerald) / 0.5));
+}
+
+/* ---- Surfaces: cards, panels, tables, dialogs ---- */
+.admin-shell[data-glow="on"] .glow-card {
+  box-shadow:
+    0 0 0 1px rgb(var(--glow-cyan) / 0.1),
+    0 10px 30px -20px rgb(var(--glow-cyan) / 0.45);
+}
+.admin-shell[data-glow="on"] .glow-card:hover {
+  box-shadow:
+    0 0 0 1px rgb(var(--glow-cyan) / 0.22),
+    0 16px 42px -20px rgb(var(--glow-cyan) / 0.55),
+    0 0 30px -14px rgb(var(--glow-violet) / 0.45);
+}
+/* Selected / important cards get the gradient accent edge. */
+.admin-shell[data-glow="on"] .glow-card-accent {
+  box-shadow:
+    0 0 0 1px rgb(var(--glow-cyan) / 0.22),
+    0 0 34px -14px rgb(var(--glow-violet) / 0.5);
+}
+
+/* ---- Status badges (tone-appropriate glow) ---- */
+.admin-shell[data-glow="on"] .glow-badge-success {
+  box-shadow: 0 0 14px -4px rgb(var(--glow-emerald) / 0.55);
+}
+.admin-shell[data-glow="on"] .glow-badge-warning {
+  box-shadow: 0 0 14px -4px rgb(var(--glow-amber) / 0.55);
+}
+.admin-shell[data-glow="on"] .glow-badge-danger {
+  box-shadow: 0 0 14px -4px rgb(var(--glow-rose) / 0.55);
+}
+.admin-shell[data-glow="on"] .glow-badge-accent {
+  box-shadow: 0 0 14px -4px rgb(var(--glow-cyan) / 0.55);
+}
+.admin-shell[data-glow="on"] .glow-badge-violet {
+  box-shadow: 0 0 14px -4px rgb(var(--glow-violet) / 0.55);
+}
+
+/* ---- Buttons ---- */
+.admin-shell[data-glow="on"] .glow-btn-accent {
+  box-shadow: 0 0 22px -8px rgb(var(--glow-cyan) / 0.65);
+}
+.admin-shell[data-glow="on"] .glow-btn-accent:hover {
+  box-shadow:
+    0 0 28px -6px rgb(var(--glow-cyan) / 0.8),
+    0 0 44px -14px rgb(var(--glow-violet) / 0.55);
+}
+.admin-shell[data-glow="on"] .glow-btn-primary {
+  box-shadow: 0 0 20px -8px rgb(var(--glow-ice) / 0.5);
+}
+.admin-shell[data-glow="on"] .glow-btn-primary:hover {
+  box-shadow: 0 0 26px -6px rgb(var(--glow-ice) / 0.75);
+}
+.admin-shell[data-glow="on"] .glow-btn-danger {
+  box-shadow: 0 0 18px -8px rgb(var(--glow-rose) / 0.6);
+}
+.admin-shell[data-glow="on"] .glow-btn-danger:hover {
+  box-shadow: 0 0 24px -6px rgb(var(--glow-rose) / 0.8);
+}
+/* Secondary/icon controls: subtle border glow on hover only. */
+.admin-shell[data-glow="on"] .glow-btn-sec:hover {
+  border-color: rgb(var(--glow-cyan) / 0.35);
+  box-shadow: 0 0 16px -8px rgb(var(--glow-cyan) / 0.55);
+}
+
+/* ---- Inputs: illuminated focus ring (keeps the existing 2px affordance) ---- */
+.admin-shell[data-glow="on"] .glow-input:focus-visible {
+  border-color: rgb(var(--glow-cyan) / 0.45);
+  box-shadow:
+    0 0 0 2px rgb(34 211 238 / 0.6),
+    0 0 18px -6px rgb(var(--glow-cyan) / 0.55);
+}
+
+/* ---- Sidebar ---- */
+.admin-shell[data-glow="on"] .glow-logo {
+  box-shadow:
+    0 0 18px -4px rgb(var(--glow-cyan) / 0.55),
+    0 0 34px -10px rgb(var(--glow-violet) / 0.55);
+}
+.admin-shell[data-glow="on"] .glow-active {
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--glow-cyan) / 0.22),
+    0 0 18px -6px rgb(var(--glow-cyan) / 0.5);
+  text-shadow: 0 0 10px rgb(var(--glow-cyan) / 0.35);
+}
+/* Navigation icons: illuminate on hover and for the active route only. */
+.admin-shell[data-glow="on"] a.nav-glow:hover svg,
+.admin-shell[data-glow="on"] a.nav-glow[aria-current="page"] svg {
+  filter: drop-shadow(0 0 5px rgb(var(--glow-cyan) / 0.6));
+}
+
+/* ---- Toggle control ---- */
+.admin-shell[data-glow="on"] .glow-toggle {
+  box-shadow: 0 0 20px -8px rgb(var(--glow-cyan) / 0.55);
+}
+.admin-shell[data-glow="on"] .glow-knob {
+  filter: drop-shadow(0 0 6px rgb(var(--glow-cyan) / 0.8));
+}
+
+/* ---- Charts (recharts) — glow the stroke, never obscure data ---- */
+.admin-shell[data-glow="on"] .recharts-line-curve {
+  filter: drop-shadow(0 0 4px rgb(var(--glow-cyan) / 0.55));
+}
+.admin-shell[data-glow="on"] .recharts-area-area {
+  filter: drop-shadow(0 0 6px rgb(var(--glow-cyan) / 0.35));
+}
+.admin-shell .recharts-default-tooltip {
+  border-radius: 12px !important;
+}
+.admin-shell[data-glow="on"] .recharts-default-tooltip {
+  box-shadow: 0 10px 30px -14px rgb(var(--glow-cyan) / 0.5);
+}
+
+/* ---- Ambient layer ---- */
+/* Decorative radial wash behind the admin chrome. Transform-only drift is
+   driven by GSAP in AdminLayout (paused for reduced-motion and when OFF). */
+.admin-shell .glow-ambient {
+  position: fixed;
+  inset: 0;
+  /* Behind all content: the admin root is `isolate`, so a negative z-index
+     child paints above the root background but below every in-flow/positioned
+     child. This keeps modal and dropdown stacking (z-40 sidebar, z-90 modals)
+     exactly as it was before. */
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.admin-shell[data-glow="on"] .glow-ambient {
+  opacity: 1;
+}
+/* The gradient lives on the element GSAP animates; `inset: -8%` keeps the
+   drift from exposing bare edges. */
+.admin-shell .glow-ambient__drift {
+  position: absolute;
+  inset: -8%;
+  background-image:
+    radial-gradient(ellipse 55% 38% at 22% -6%, rgb(var(--glow-cyan) / 0.16), transparent 70%),
+    radial-gradient(ellipse 45% 32% at 82% 4%, rgb(var(--glow-violet) / 0.14), transparent 72%),
+    radial-gradient(ellipse 60% 40% at 50% 108%, rgb(var(--glow-magenta) / 0.07), transparent 70%);
+}
+/* Promote to its own layer only while actively glowing, so the disabled state
+   costs no GPU memory. */
+.admin-shell[data-glow="on"] .glow-ambient__drift {
+  will-change: transform;
+}

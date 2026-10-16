@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import multer from 'multer';
+import * as c from '../controllers/userController.js';
+import { authenticate } from '../middleware/authMiddleware.js';
+import { validate } from '../validators/validationMiddleware.js';
+import { updateMeSchema } from '../validators/userValidator.js';
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 2 * 1024 * 1024 }, fileFilter: (_r, f, cb) => /^(image\/(png|jpeg|webp))$/.test(f.mimetype) ? cb(null, true) : cb(new Error('Only PNG/JPEG/WebP allowed')) });
+const r = Router(); r.use(authenticate);
+r.get('/me', c.getMe); r.patch('/me', validate(updateMeSchema), c.patchMe); r.delete('/me', c.deleteMe);
+r.post('/me/avatar', upload.single('avatar'), c.uploadAvatar); r.delete('/me/avatar', c.removeAvatar);
+r.patch('/me/preferences', c.patchPreferences); r.get('/me/export', c.exportMe);
+r.get('/me/activity', c.myActivity); r.get('/me/sessions', c.mySessions); r.delete('/me/sessions/:id', c.deleteSession); r.get('/me/purchases', c.myPurchases);
+r.get('/me/subscription', c.mySubscription); r.get('/me/notifications', c.myNotifications); r.patch('/me/notifications/read-all', c.readAllNotifications); r.patch('/me/notifications/:id/read', c.readNotification); r.post('/me/notifications/:id/read', c.readNotification);
+export default r;

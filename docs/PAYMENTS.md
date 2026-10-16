@@ -1,0 +1,2 @@
+# Payments
+Provider factory `PAYMENT_PROVIDER=razorpay|stripe`. Plan catalog server-side only (FREE/HUNTER 0, AWAKENED 999, MONARCH 2499 INR; AI limits 100/500/2000/10000). Client price never trusted. Razorpay: orders.create + HMAC verify `order|payment`. Stripe: PaymentIntents + webhook constructEvent. Webhooks: raw body, signature-checked, idempotent (stored event id, 200 on replay). Refunds via provider SDK.

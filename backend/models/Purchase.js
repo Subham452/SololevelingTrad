@@ -1,0 +1,3 @@
+import mongoose from 'mongoose';
+const s = new mongoose.Schema({ orderId:{type:String,unique:true,required:true}, userId:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true,index:true}, plan:String, amount:Number, currency:{type:String,default:'INR'}, status:{type:String,default:'completed'}, paymentId:{type:mongoose.Schema.Types.ObjectId,ref:'Payment'} },{timestamps:true});
+export default mongoose.model('Purchase', s);

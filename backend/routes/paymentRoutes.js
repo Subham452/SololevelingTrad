@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import * as c from '../controllers/paymentController.js';
+import { authenticate } from '../middleware/authMiddleware.js';
+import { validate } from '../validators/validationMiddleware.js';
+import { createOrderSchema, verifyPaymentSchema } from '../validators/paymentValidator.js';
+import { paymentLimiter } from '../middleware/rateLimitMiddleware.js';
+const r = Router(); r.use(authenticate, paymentLimiter);
+r.post('/create', validate(createOrderSchema), c.create); r.post('/verify', validate(verifyPaymentSchema), c.verify);
+r.get('/history', c.history); r.get('/me', c.history); r.get('/:id', c.byId);
+export default r;

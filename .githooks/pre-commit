@@ -1,0 +1,35 @@
+#!/bin/sh
+# Pre-commit guard: refuse to commit files that look like secrets.
+#
+# .gitignore only stops secrets being ADDED by accident — `git add -f` (or a
+# new extension like .env.bak) walks straight past it. This hook is the backstop
+# and checks the file names actually staged, regardless of .gitignore.
+#
+# Activated with:  git config core.hooksPath .githooks
+# Deliberate bypass:  git commit --no-verify
+set -eu
+
+# Staged files (added/copied/modified), minus anything already deleted.
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$staged" ]; then
+  exit 0
+fi
+
+# Name patterns that must never be committed. .env.example is a safe template.
+blocked=$(printf '%s\n' "$staged" | grep -Ei \
+  '(^|/)\.env($|\.)|\.(pem|key|p8|p12|pfx|jks|keystore)$|(^|/)id_(rsa|dsa|ecdsa|ed25519)$|(^|/)\.npmrc$|(service[-_]?account|credentials?|adminsdk)[^/]*\.json$' \
+  | grep -Ev '(^|/)\.env\.example$' || true)
+
+if [ -n "$blocked" ]; then
+  echo "" >&2
+  echo "  Commit blocked — these staged files look like secrets:" >&2
+  printf '%s\n' "$blocked" | sed 's/^/    - /' >&2
+  echo "" >&2
+  echo "  Unstage them:   git restore --staged <file>" >&2
+  echo "  Or ignore:      echo '<pattern>' >> .gitignore" >&2
+  echo "" >&2
+  exit 1
+fi
+
+exit 0
